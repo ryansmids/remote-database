@@ -50,42 +50,67 @@ public class WeerDataApi
     }
 
     private async Task ZetDataInDatabase(string weerData, string tijdData)
+{
+    try
     {
-        try
+        Log.Information("WeerData ontvangen, verwerken begint.");
+        JObject jsonWeerData = JObject.Parse(weerData);
+        var weerInfo = jsonWeerData["liveweer"][0];
+
+        string plaats = (string)weerInfo["plaats"];
+        string temperatuurString = (string)weerInfo["temp"];
+
+        Log.Information($"Plaats: {plaats}, TemperatuurString: {temperatuurString}");
+
+        if (decimal.TryParse(temperatuurString, NumberStyles.Any, CultureInfo.InvariantCulture, out decimal temperatuur))
         {
-            JObject jsonWeerData = JObject.Parse(weerData);
-            var weerInfo = jsonWeerData["liveweer"][0];
+            JObject jsonTijdData = JObject.Parse(tijdData);
+            string apiTijd = (string)jsonTijdData["datetime"];  // Dit is de tijd als string
 
-            string plaats = (string)weerInfo["plaats"];
-            string temperatuurString = (string)weerInfo["temp"];
+            // Log de ontvangen tijdstring
+            Log.Information($"Ontvangen apiTijd: {apiTijd}");
 
-            if (decimal.TryParse(temperatuurString, NumberStyles.Any, CultureInfo.InvariantCulture, out decimal temperatuur))
+            // Direct de string omzetten naar een DateTime met specifiek formaat
+            DateTime tijd;
+            try
             {
-                JObject jsonTijdData = JObject.Parse(tijdData);
-                string apiTijd = (string)jsonTijdData["datetime"];
-                Log.Information($"Data opgeslagen: temperatuur={temperatuur}, tijd={apiTijd}, locatie={plaats}");
-
-                var buitentemperatuur = new BuitenTemperatuur
-                {
-                    Temperatuur = temperatuur,
-                    Tijd = apiTijd,
-                    Locatie = plaats
-                };
-
-                _context.BuitenTemperatuur.Add(buitentemperatuur);
-                await _context.SaveChangesAsync();
-                Log.Information("Data succesvol opgeslagen in de database.");
+                tijd = DateTime.ParseExact(apiTijd, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
+                // Zet de DateTime expliciet om naar UTC
+                tijd = DateTime.SpecifyKind(tijd, DateTimeKind.Utc);
             }
-            else
+            catch (FormatException)
             {
-                Log.Information("De temperatuurwaarde kon niet worden geconverteerd naar een numeriek type.");
+                Log.Error($"Tijdstring kon niet worden geconverteerd naar DateTime: {apiTijd}");
+                throw;
             }
+
+            Log.Information($"Gekonverteerde tijd naar UTC: {tijd}");
+
+            var buitentemperatuur = new BuitenTemperatuur
+            {
+                Temperatuur = temperatuur,
+                Tijd = tijd,  // Direct opslaan als DateTime in UTC
+                Locatie = plaats
+            };
+
+            _context.BuitenTemperatuur.Add(buitentemperatuur);
+            await _context.SaveChangesAsync();
+            Log.Information("Data succesvol opgeslagen in de database.");
         }
-        catch (Exception ex)
+        else
         {
-            Log.Information($"Er is een fout opgetreden bij het opslaan van gegevens in de database: {ex.Message}");
+            Log.Warning("De temperatuurwaarde kon niet worden geconverteerd naar een numeriek type.");
         }
     }
+    catch (Exception ex)
+    {
+        Log.Error($"Er is een fout opgetreden bij het opslaan van gegevens in de database: {ex}");
+    }
+}
+
+
+
+
 }
 
 

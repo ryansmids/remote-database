@@ -8,7 +8,7 @@ public class AppDbContextFactory : IDesignTimeDbContextFactory<AppDbContext>
         var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
         
         // Hier voeg je je connection string toe
-        optionsBuilder.UseNpgsql("Host=192.168.0.76;Username=postgres;Password=REAdmin;Database=KlimaatdbDev");
+        optionsBuilder.UseNpgsql("Host=192.168.0.76;Username=postgres;Password=REAdmin;Database=KlimaatdbDev2");
 
         return new AppDbContext(optionsBuilder.Options);
     }

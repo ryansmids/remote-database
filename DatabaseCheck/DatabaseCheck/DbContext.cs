@@ -11,13 +11,17 @@ public class AppDbContext : Microsoft.EntityFrameworkCore.DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<BuitenTemperatuur>(entity =>
+        modelBuilder.Entity<BuitenTemperatuur>(entiteit =>
         {
-            entity.ToTable("BuitenTemperatuur");  // Zorg ervoor dat de tabel "BuitenTemperatuur" heet, enkelvoud.
-            entity.HasKey(e => e.Id);
-            entity.Property(e => e.Temperatuur).HasColumnType("decimal(5,2)").IsRequired();
-            entity.Property(e => e.Tijd).IsRequired().HasMaxLength(255);
-            entity.Property(e => e.Locatie).IsRequired().HasMaxLength(255);
+            entiteit.HasKey(e => e.Id);
+            entiteit.Property(e => e.Temperatuur).HasColumnType("decimal(5,2)").IsRequired();
+
+            // Zorg ervoor dat dit correct is
+            entiteit.Property(e => e.Tijd)
+                .IsRequired()
+                .HasColumnType("timestamp with time zone"); // Voor PostgreSQL
+
+            entiteit.Property(e => e.Locatie).IsRequired().HasMaxLength(255);
         });
     }
 
@@ -28,6 +32,6 @@ public class BuitenTemperatuur
 {
     public int Id { get; set; }
     public decimal Temperatuur { get; set; }
-    public string Tijd { get; set; }
+    public DateTime Tijd { get; set; }
     public string Locatie { get; set; }
 }

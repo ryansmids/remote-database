@@ -11,7 +11,7 @@ Log.Information("Database Check gestart.");
 
 var serviceCollection = new ServiceCollection();
 serviceCollection.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql("Host=192.168.0.76;Username=postgres;Password=REAdmin;Database=KlimaatdbDev"));
+    options.UseNpgsql("Host=192.168.0.76;Username=postgres;Password=REAdmin;Database=KlimaatdbDev2"));
 serviceCollection.AddTransient<WeerDataApi>();
 
 var serviceProvider = serviceCollection.BuildServiceProvider();
