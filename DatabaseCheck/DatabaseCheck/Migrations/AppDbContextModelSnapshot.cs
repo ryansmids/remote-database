@@ -42,7 +42,7 @@ namespace DatabaseCheck.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("BuitenTemperatuur");
+                    b.ToTable("BuitenTemperatuur", (string)null);
                 });
 #pragma warning restore 612, 618
         }
