@@ -38,11 +38,11 @@ namespace DatabaseCheck.Migrations
                         .HasColumnType("decimal(5,2)");
 
                     b.Property<DateTime>("Tijd")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp");
 
                     b.HasKey("Id");
 
-                    b.ToTable("BuitenTemperatuur", (string)null);
+                    b.ToTable("BuitenTemperatuur");
                 });
 #pragma warning restore 612, 618
         }

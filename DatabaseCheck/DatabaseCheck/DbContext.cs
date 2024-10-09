@@ -17,9 +17,10 @@ public class AppDbContext : Microsoft.EntityFrameworkCore.DbContext
             entiteit.Property(e => e.Temperatuur).HasColumnType("decimal(5,2)").IsRequired();
 
             // Zorg ervoor dat dit correct is
-            entiteit.Property(e => e.Tijd)
-                .IsRequired()
-                .HasColumnType("timestamp with time zone"); // Voor PostgreSQL
+           entiteit.Property(e => e.Tijd)
+               .IsRequired()
+               .HasColumnType("timestamp with time zone");  // Gebruik "TIMESTAMPTZ"
+
 
             entiteit.Property(e => e.Locatie).IsRequired().HasMaxLength(255);
         });

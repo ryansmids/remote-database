@@ -11,8 +11,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DatabaseCheck.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240924093837_TijdChange")]
-    partial class TijdChange
+    [Migration("20241009073856_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -41,7 +41,7 @@ namespace DatabaseCheck.Migrations
                         .HasColumnType("decimal(5,2)");
 
                     b.Property<DateTime>("Tijd")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp");
 
                     b.HasKey("Id");
 
